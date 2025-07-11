@@ -1,18 +1,28 @@
 [build-system]
+# Tell pip how to build the project
 requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "brain2behaviour"
-version = "0.0.1"
-description = "Light-weight CPM package"
-readme = "README.md"
-authors = [{name = "Austin Benn"}]
-requires-python = ">=3"
-dependencies = ["numpy","pandas","scikit-learn","scipy"]
+name            = "brain2behaviour"
+version         = "0.0.1"
+description     = "Light-weight CPM package"
+readme          = "README.md"
+authors         = [{ name = "Austin Benn" }]
+requires-python = ">=3.8"
+
+dependencies = [
+    "numpy",
+    "pandas",
+    "scikit-learn",
+    "scipy",
+    "pyarrow",
+]
 
 [tool.setuptools]
-package-dir = {"" = "src"}          # ← tell setuptools that code is under src
+package-dir = { "" = "src" }        # source code lives in the src/ directory
 
 [tool.setuptools.packages.find]
-where = ["src"]    
+where = ["src"]                     # look only inside src/ for packages
+
+
