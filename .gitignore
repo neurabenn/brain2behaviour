@@ -1,0 +1,10 @@
+.ipynb_checkpoints/
+__pycache__/
+src/brain2behaviour.egg-info/
+src/brain2behaviour/__pycache__/
+src/brain2behaviour/dataset/.ipynb_checkpoints/
+src/brain2behaviour/dataset/__pycache__/
+src/brain2behaviour/feature_selection/.ipynb_checkpoints/
+src/brain2behaviour/feature_selection/__pycache__/
+src/brain2behaviour/preprocessing/.ipynb_checkpoints/
+src/brain2behaviour/preprocessing/__pycache__/
