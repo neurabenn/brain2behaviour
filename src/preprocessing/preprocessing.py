@@ -3,7 +3,7 @@ import pandas as pd
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.preprocessing import LabelEncoder
 from sklearn.utils.validation import check_is_fitted
-from utils import palm_inormal,normal_eqn_python,zscore,cube_root
+from utils import import cube_root,zscore,normal_eqn_python,palm_inormal
 
 
 #### function to residualize distances by subject confounds.
@@ -201,3 +201,45 @@ class BehaviorPrep(BaseEstimator, TransformerMixin):
         z_arr   = zscore(resid, ax=0)
         return pd.DataFrame(z_arr, index=X.index, columns=X.columns)
 
+def clean_fold(dataset,
+                   fold,
+                   encode_cols,
+                   bin_encode,
+                   area_cols,
+                   volume_cols,
+                   gaussianize = True,
+                   add_squares = True,
+                   zscore_cols=True,
+                   drop_cols=None):
+        """ Instantiates a confound prep class and cleans the associated behavior and brain data of a given cv fold"""
+        print(f'Cleaning {fold}')
+        #### training half
+        trainSubjs=dataset.cv_folds[fold]['training']
+        
+        prepTrainingConfs = ConfoundPrep(subject_list=trainSubjs,encode_cols=encode_cols,
+                                         bin_encode=bin_encode,area_cols=area_cols,volume_cols=volume_cols,
+                                         gaussianize=add_squares,add_squares=zscore_cols,zscore_cols=zscore_cols)
+
+        prepTrainingConfs.fit(dataset.confounds)
+        processedTrainingconfounds = prepTrainingConfs.transform(dataset.confounds)
+        
+        beh_cleanTest=BehaviorPrep().fit_transform(dataset.behaviorData.loc[trainSubjs],processedTrainingconfounds)
+        brain_cleanTest=DistancePrep().fit_transform(dataset.brainData.loc[trainSubjs],processedTrainingconfounds)
+        
+        #### testing half -- split to avoid leakage of training mean with zscoring
+        testSubjs=dataset.cv_folds[fold]['testing']
+        prepTestingConfs=ConfoundPrep(subject_list=testSubjs,encode_cols=encode_cols,
+                                      bin_encode=bin_encode,area_cols=area_cols,volume_cols=volume_cols,
+                                      gaussianize=add_squares,add_squares=zscore_cols,zscore_cols=zscore_cols)
+
+        prepTestingConfs.fit(dataset.confounds)
+        processedTestingconfounds = prepTestingConfs.transform(dataset.confounds)
+        
+        beh_cleanTrain=BehaviorPrep().fit_transform(dataset.behaviorData.loc[testSubjs],processedTrainingconfounds)
+        brain_cleanTrain=DistancePrep().fit_transform(dataset.brainData.loc[testSubjs],processedTrainingconfounds)
+        
+        
+        return {'BrainTrainClean': beh_cleanTrain,
+                'BrainTestClean':   brain_cleanTrain,
+                'BehTrainClean': beh_cleanTest,
+                'BehTestClean':   brain_cleanTest}

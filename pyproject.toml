@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "brain2behaviour"
+version = "0.0.1"
+description = "Light-weight CPM package"
+readme = "README.md"
+authors = [{name = "Austin Benn"}]
+requires-python = ">=3"
+dependencies = ["numpy","pandas","scikit-learn","scipy"]
+
+[tool.setuptools]
+package-dir = {"" = "src"}          # ← tell setuptools that code is under src
+
+[tool.setuptools.packages.find]
+where = ["src"]    

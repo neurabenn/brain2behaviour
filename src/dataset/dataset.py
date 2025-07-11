@@ -2,7 +2,7 @@ import os
 import numpy as np
 import pandas as pd
 import pickle
-from distpredict.preprocessing.utils import create_cv_groups
+from brain2behaviour.preprocessing.utils import create_cv_groups
 from sklearn.model_selection import GroupShuffleSplit ### enables splitting but keeps families together
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import ShuffleSplit
@@ -10,7 +10,7 @@ from typing import Optional
 #### in future iterations, would be good to check for gaussianity before running inverse normal transforms. 
 ### why transform if not necessary?
 
-class distpredictDataset:
+class b2b_Dataset:
     def __init__(self, brainData, behaviorData, confounds,
                  ncv_splits, filepath: str, subjectList=False, cv_seeds=False,feature_pthresh=0.01) -> None:
         """Dataset class for matrix-based predictive modeling"""
@@ -266,9 +266,9 @@ class distpredictDataset:
 
     @classmethod
     def load(cls,filepath: str):
-        """Load a distpredictDataset instance from a pickle file."""
+        """Load a brain2behviour dataset instance from a pickle file."""
         with open(filepath, 'rb') as f:
             obj = pickle.load(f)
-        if not isinstance(obj, distpredictDataset):
-            raise TypeError(f"Expected distpredictDataset, got {type(obj)}")
+        if not isinstance(obj, b2b_Dataset):
+            raise TypeError(f"Expected b2b_Dataset, got {type(obj)}")
         return obj
