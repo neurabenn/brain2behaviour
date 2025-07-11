@@ -311,6 +311,7 @@ class BrainBehaviorDataset:
         dict[str, dict[str, set[str]]]
             {task_name: {"positive": {edge, …}, "negative": {edge, …}}, …}
         """
+        self._feature_fold_threshold=threshold_percentage
         # ---------- validation ---------------------------------------------------
         if not 0.0 <= threshold_percentage <= 100.0:
             raise ValueError("threshold_percentage must be between 0 and 100.")
@@ -389,6 +390,6 @@ class BrainBehaviorDataset:
         """Load a brain2behviour dataset instance from a pickle file."""
         with open(filepath, 'rb') as f:
             obj = pickle.load(f)
-        if not isinstance(obj, b2b_Dataset):
-            raise TypeError(f"Expected b2b_Dataset, got {type(obj)}")
+        if not isinstance(obj, BrainBehaviorDataset):
+            raise TypeError(f"Expected BrainBehaviorDataset, got {type(obj)}")
         return obj
