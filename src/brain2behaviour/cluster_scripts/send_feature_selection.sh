@@ -3,8 +3,8 @@
 #SBATCH -o ./logs/FeatureExtraction-%j-%a.out
 #SBATCH -p short
 #SBATCH --constraint="skl-compat"
-#SBATCH --cpus-per-task=3
-#SBATCH --array=0-5000
+#SBATCH --cpus-per-task=2
+#SBATCH --array=0-5000:1
 #SBATCH --requeue
 ml use -a /apps/eb/2020b/skylake/modules/all
 module load Python/3.8.2-GCCcore-9.3.0

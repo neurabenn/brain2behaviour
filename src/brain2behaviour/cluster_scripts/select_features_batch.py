@@ -3,7 +3,7 @@ from pathlib import Path
 import argparse, os, multiprocessing as mp
 import pandas as pd
 from brain2behaviour.dataset import BrainBehaviorDataset 
-from brain2behaviour.preprocessing.preprocessing import clean_dataset
+from brain2behaviour.preprocessing import clean_fold
 from brain2behaviour.feature_selection import get_CPM_features
 
 # ------------------------------------------------------------
@@ -27,7 +27,7 @@ def get_fold_features(
     data = BrainBehaviorDataset.load(datapath)            # <-- fix class name
     print("Loaded:", datapath)
 
-    cleaned = clean_dataset(
+    cleaned = clean_fold(
         data, fold,
         encode_cols=encode_cols,
         bin_encode=bin_encode,
@@ -42,11 +42,17 @@ def get_fold_features(
         cleaned,
         pthresh=0.01,
         ncpus=ncpus,
-        batch_size=batch_size,
-    )
+        batch_size=batch_size)
 
-    (pd.Series(feats, name="feature")                   # nicer Parquet
-       .to_parquet(out_dir / f"{fold}.parquet"))
+    for key in feats.keys():
+        print(key)
+        s=pd.Series(feats[key])
+        df=s.to_frame(key)
+        os.makedirs(f'{out_dir}/{key}/',exist_ok=True)
+        df.to_parquet(f'{out_dir}/{key}/{fold}.parquet')
+        print(f'features saved to {out_dir}/{key}/{fold}.parquet')
+    
+    
 
 # ------------------------------------------------------------
 def parse_args() -> argparse.Namespace:
