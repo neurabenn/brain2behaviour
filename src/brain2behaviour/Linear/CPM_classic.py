@@ -223,10 +223,10 @@ def train_predict_test(
     else:
         return scorer(y_test_arr, y_pred)
 
-def evaluate_fold_cpm(clean_data_dict,outpath,fold,perm_set):
+def evaluate_fold_cpm(clean_data_dict,outpath,fold,perm_set,sign):
     model,r = train_predict_test(clean_data_dict,save_model=True)
     print(f'saving actual model to {outpath}.pkl')
-    with open(f'{outpath}/{fold}_model.pkl','wb') as f:
+    with open(f'{outpath}/{fold}_{sign}_model.pkl','wb') as f:
         pickle.dump(model,f)
     if type(perm_set)==int:
         rvals=[]
@@ -247,4 +247,4 @@ def evaluate_fold_cpm(clean_data_dict,outpath,fold,perm_set):
             r = train_predict_test(permed_dict,save_model=False)
             rvals.append(r)
     out_array=np.asarray(rvals)
-    np.save(f'{outpath}/{fold}permuted_r.npy',out_array)
+    np.save(f'{outpath}/{fold}_{sign}_permuted_r.npy',out_array)

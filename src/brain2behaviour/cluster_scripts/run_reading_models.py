@@ -36,7 +36,7 @@ def run_end2endCPM(datasets, fold, sign, permutation_set, outpath):
         clean_data_dict=cleaned_data,
         outpath=outpath,
         fold=fold,
-        perm_set=permutation_set
+        perm_set=permutation_set,sign
     )
 
 # ------------------------------------------------------------
