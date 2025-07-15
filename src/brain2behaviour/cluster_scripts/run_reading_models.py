@@ -36,7 +36,7 @@ def run_end2endCPM(datasets, fold, sign, permutation_set, outpath):
         clean_data_dict=cleaned_data,
         outpath=outpath,
         fold=fold,
-        perm_set=permutation_set,sign
+        perm_set=permutation_set,sign=sign
     )
 
 # ------------------------------------------------------------
@@ -56,7 +56,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--sign", "-s",
-        choices=["positive", "negative"], required=True,
+        choices=["joint","positive", "negative"], required=True,
         help="Which CPM feature sign to keep"
     )
     parser.add_argument(
