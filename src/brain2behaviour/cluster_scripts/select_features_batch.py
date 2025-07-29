@@ -21,7 +21,8 @@ def get_fold_features(
     zscore_cols=True,
 ):
     datapath = Path(datapath).expanduser().resolve()    # <-- ensure Path
-    out_dir  = datapath.parent / "features_tmp"
+    # out_dir  = datapath.parent / "features_tmp"
+    out_dir  = datapath.parent/f"{datapath.stem}_features_tmp" ### build path based on dataset name
     out_dir.mkdir(exist_ok=True)
 
     data = BrainBehaviorDataset.load(datapath)            # <-- fix class name

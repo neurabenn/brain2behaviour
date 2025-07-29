@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH --job-name=CPMFeat
-#SBATCH -o ./logs/FeatureExtraction-%j-%a.out
+#SBATCH -o ./logs/FeatExtract-%j-%a.out
 #SBATCH -p short
 #SBATCH --constraint="skl-compat"
 #SBATCH --cpus-per-task=2
-#SBATCH --array=0-5000:1
+#SBATCH --array=10000-15201:1
 #SBATCH --requeue
 ml use -a /apps/eb/2020b/skylake/modules/all
 module load Python/3.8.2-GCCcore-9.3.0
@@ -16,7 +16,7 @@ ITERATION=$SLURM_ARRAY_TASK_ID
 echo "Processing fold $ITERATION"
 
 # ----- pick the N-th line (1-based for sed) -----
-line=$(sed -n "$((SLURM_ARRAY_TASK_ID+1))p" worklist.txt)
+line=$(sed -n "$((SLURM_ARRAY_TASK_ID+1))p" worklist_J29.txt)
 DATASET=$(awk '{print $1}' <<< "$line")
 echo $DATASET
 FOLD=$(awk   '{print $2}' <<< "$line")
