@@ -31,9 +31,9 @@ def prep_ds_CPM_classic(
     fold,
     sign2keep,
     encode_cols,
-    bin_encode,
     area_cols,
     volume_cols,
+    bin_encode,
     gaussianize=True,
     add_squares=True,
     zscore_cols=True
@@ -110,9 +110,9 @@ def prep_ds_CPM_classic(
         cleaned = clean_fold(
             ds, fold,
             encode_cols=encode_cols,
-            bin_encode=bin_encode,
             area_cols=area_cols,
             volume_cols=volume_cols,
+            bin_encode=bin_encode,
             gaussianize=gaussianize,
             add_squares=add_squares,
             zscore_cols=zscore_cols,
@@ -219,12 +219,14 @@ def train_predict_test(
 
     # 5) Score
     if save_model:
-        return model,scorer(y_test_arr, y_pred)
+        return model,scorer(y_test_arr, y_pred),pd.DataFrame({'real_data':y_test_arr,'prediction':y_pred})
     else:
-        return scorer(y_test_arr, y_pred)
+        return scorer(y_test_arr, y_pred),pd.DataFrame({'real_data':y_test_arr,'prediction':y_pred})
 
-def evaluate_fold_cpm(clean_data_dict,outpath,fold,perm_set,sign):
-    model,r = train_predict_test(clean_data_dict,save_model=True)
+def evaluate_fold_cpm(clean_data_dict,outpath,fold,sign,perm_set):
+    print(clean_data_dict.keys())
+    model,r, pred_dict= train_predict_test(clean_data_dict,save_model=True)
+    pred_dict.to_csv(f'{outpath}/{fold}_{sign}_pred_values.csv')
     print(f'saving actual model to {outpath}.pkl')
     with open(f'{outpath}/{fold}_{sign}_model.pkl','wb') as f:
         pickle.dump(model,f)
@@ -235,16 +237,17 @@ def evaluate_fold_cpm(clean_data_dict,outpath,fold,perm_set,sign):
         for i in range(perm_set):
             permed_dict=clean_data_dict.copy()
             permed_dict['BehTrainClean']=shuffle(permed_dict['BehTrainClean'])
-            r = train_predict_test(permed_dict,save_model=False)
+            r,pred_dic = train_predict_test(permed_dict,save_model=False)
             r_perm.append(r)
     elif type(perm_set)==str:
         perm_set=pd.read_csv(perm_set,header=None)
         rvals=[]
-        for i in perm_set:
+        for i,perm in enumerate(perm_set):
             ### if using csv then first set should be original order
             permed_dict=clean_data_dict.copy()
-            permed_dict['BehTrainClean']=permed_dict['BehTrainClean'].iloc[perm_set[i]]
-            r = train_predict_test(permed_dict,save_model=False)
-            rvals.append(r)
+            permed_dict['BehTrainClean']=permed_dict['BehTrainClean'].iloc[perm_set[perm]]
+            r,pred_dict = train_predict_test(permed_dict,save_model=False)
+            rvals.append(r)                
     out_array=np.asarray(rvals)
     np.save(f'{outpath}/{fold}_{sign}_permuted_r.npy',out_array)
+   

@@ -16,14 +16,14 @@ ITERATION=$SLURM_ARRAY_TASK_ID
 echo "Processing fold $ITERATION"
 
 # ----- pick the N-th line (1-based for sed) -----
-line=$(sed -n "$((SLURM_ARRAY_TASK_ID+1))p" FIXED_feature_worklist.txt)
+line=$(sed -n "$((SLURM_ARRAY_TASK_ID+1))p" SES_feature_worklist.txt)
 DATASET=$(awk '{print $1}' <<< "$line")
 echo $DATASET
 FOLD=$(awk   '{print $2}' <<< "$line")
 echo $FOLD
 
-echo python3 -u select_features_batch.py --dataset $DATASET --fold $FOLD
-python3 -u select_features_batch.py --dataset $DATASET --fold $FOLD
+echo python3 -u select_features_batch-SES.py --dataset $DATASET --fold $FOLD
+python3 -u select_features_batch-SES.py --dataset $DATASET --fold $FOLD
 
 
 

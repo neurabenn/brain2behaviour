@@ -11,11 +11,16 @@ from collections.abc import Sequence
 
 # ------------------------------------------------------------
 def run_end2endCPM(datasets, fold, sign, permutation_set, outpath):
+    outpath = Path(outpath)                         # <-- add
+    outpath.mkdir(parents=True, exist_ok=True)
+    
     if isinstance(datasets, Sequence) and not isinstance(datasets, (str, bytes)):
         datasets = list(datasets)
     else:
         datasets = [datasets]
     # Load if path(s), else pass-through
+    outpath = Path(outpath)                         # <-- add
+    outpath.mkdir(parents=True, exist_ok=True)
     datasets = [BrainBehaviorDataset.load(str(d)) if isinstance(d, Path) else d
                 for d in datasets]
 
@@ -24,9 +29,9 @@ def run_end2endCPM(datasets, fold, sign, permutation_set, outpath):
         fold=fold,
         sign2keep=sign,
         encode_cols=("Gender", "Acquisition"),
-        bin_encode={"Acquisition": 2},
         area_cols=("Larea", "Rarea"),
         volume_cols=("FS_IntraCranial_Vol", "FS_BrainSeg_Vol"),
+        bin_encode={"Acquisition": 2},
         gaussianize=True,
         add_squares=True,
         zscore_cols=True

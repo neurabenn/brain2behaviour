@@ -4,7 +4,7 @@
 #SBATCH -p short
 #SBATCH --constraint="skl-compat"
 #SBATCH --cpus-per-task=1
-#SBATCH --array=0-15000:1
+#SBATCH --array=0-1200:1
 #SBATCH --requeue
 ml use -a /apps/eb/2020b/skylake/modules/all
 module load Python/3.8.2-GCCcore-9.3.0
@@ -15,7 +15,7 @@ ITERATION=$SLURM_ARRAY_TASK_ID
 echo "Processing fold $ITERATION"
 
 # ----- pick the N-th line (1-based for sed) -----
-line=$(sed -n "$((SLURM_ARRAY_TASK_ID+1))p" training_worklist.txt)
+line=$(sed -n "$((SLURM_ARRAY_TASK_ID+1))p" FIXED_leakage_model_worklist.txt)
 DATASET=$(awk '{print $1}'    <<< "$line")
 FOLD=$(awk    '{print $2}'    <<< "$line")
 SIGN=$(awk    '{print $3}'    <<< "$line")
