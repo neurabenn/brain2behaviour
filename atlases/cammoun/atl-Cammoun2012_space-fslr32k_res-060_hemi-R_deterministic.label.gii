@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GIFTI xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="http://brainvis.wustl.edu/caret6/xml_schemas/GIFTI_Caret.xsd"
+       Version="1"
+       NumberOfDataArrays="1">
+   <MetaData>
+      <MD>
+         <Name><![CDATA[AnatomicalStructurePrimary]]></Name>
+         <Value><![CDATA[Invalid]]></Value>
+      </MD>
+      <MD>
+         <Name><![CDATA[ParentProvenance]]></Name>
+         <Value><![CDATA[/home/rmarkello/nnt-data/standard_mesh_atlases/resample_fsaverage/fs_LR-deformed_to-fsaverage.R.sphere.32k_fs_LR.surf.gii:
+wb_command -surface-sphere-project-unproject ../R.sphere.32k_fs_LR.surf.gii ../fs_R/fs_R-to-fs_LR_fsaverage.R_LR.spherical_std.164k_fs_R.surf.gii ../fs_R/fsaverage.R.sphere.164k_fs_R.surf.gii fs_LR-deformed-to-fsaverage.R.sphere.32k_fs_LR.surf.gii
+
+]]></Value>
+      </MD>
+      <MD>
+         <Name><![CDATA[ProgramProvenance]]></Name>
+         <Value><![CDATA[Connectome Workbench
+Type: Command Line Application
+Version: 1.4.2
+Qt Compiled Version: 5.9.5
+Qt Runtime Version: 5.9.5
+Commit: unknown
+Commit Date: unknown
+Compiled with OpenMP: YES
+Compiler: c++ (/usr/bin)
+Compiler Version: 7.3.0
+Compiled Debug: NO
+Operating System: Linux
+]]></Value>
+      </MD>
+      <MD>
+         <Name><![CDATA[Provenance]]></Name>
+         <Value><![CDATA[wb_command -label-resample /home/rmarkello/nnt-data/atl-cammoun2012/fsaverage/atl-Cammoun2012_space-fsaverage_res-060_hemi-R_deterministic.label.gii /home/rmarkello/nnt-data/standard_mesh_atlases/resample_fsaverage/fsaverage_std_sphere.R.164k_fsavg_R.surf.gii /home/rmarkello/nnt-data/standard_mesh_atlases/resample_fsaverage/fs_LR-deformed_to-fsaverage.R.sphere.32k_fs_LR.surf.gii ADAP_BARY_AREA /home/rmarkello/nnt-data/atl-cammoun2012/fslr32k/atl-Cammoun2012_space-fslr32k_res-060_hemi-R_deterministic.label.gii -area-metrics /home/rmarkello/nnt-data/standard_mesh_atlases/resample_fsaverage/fsaverage.R.midthickness_va_avg.164k_fsavg_R.shape.gii /home/rmarkello/nnt-data/standard_mesh_atlases/resample_fsaverage/fs_LR.R.midthickness_va_avg.32k_fs_LR.shape.gii]]></Value>
+      </MD>
+      <MD>
+         <Name><![CDATA[WorkingDirectory]]></Name>
+         <Value><![CDATA[/home/rmarkello/gitrepos/netneurotools]]></Value>
+      </MD>
+   </MetaData>
+   <LabelTable>
+      <Label Key="0" Red="0" Green="0" Blue="0" Alpha="0"><![CDATA[???]]></Label>
+      <Label Key="1" Red="0.137255" Green="0.294118" Blue="0.196078" Alpha="1"><![CDATA[lateralorbitofrontal_1]]></Label>
+      <Label Key="2" Red="0.137255" Green="0.282353" Blue="0.196078" Alpha="1"><![CDATA[lateralorbitofrontal_2]]></Label>
+      <Label Key="3" Red="0.0784314" Green="0.392157" Blue="0.196078" Alpha="1"><![CDATA[parsorbitalis_1]]></Label>
+      <Label Key="4" Red="0.470588" Green="0.27451" Blue="0.196078" Alpha="1"><![CDATA[corpuscallosum]]></Label>
+      <Label Key="5" Red="0.392157" Green="0" Blue="0.392157" Alpha="1"><![CDATA[frontalpole_1]]></Label>
+      <Label Key="6" Red="0.784314" Green="0.137255" Blue="0.294118" Alpha="1"><![CDATA[medialorbitofrontal_1]]></Label>
+      <Label Key="7" Red="0.713726" Green="0.137255" Blue="0.294118" Alpha="1"><![CDATA[medialorbitofrontal_2]]></Label>
+      <Label Key="8" Red="0.862745" Green="0.235294" Blue="0.0784314" Alpha="1"><![CDATA[parstriangularis_1]]></Label>
+      <Label Key="9" Red="0.862745" Green="0.705882" Blue="0.54902" Alpha="1"><![CDATA[parsopercularis_1]]></Label>
+      <Label Key="10" Red="0.294118" Green="0.196078" Blue="0.490196" Alpha="1"><![CDATA[rostralmiddlefrontal_1]]></Label>
+      <Label Key="11" Red="0.294118" Green="0.196078" Blue="0.478431" Alpha="1"><![CDATA[rostralmiddlefrontal_2]]></Label>
+      <Label Key="12" Red="0.0784314" Green="0.862745" Blue="0.627451" Alpha="1"><![CDATA[superiorfrontal_1]]></Label>
+      <Label Key="13" Red="0.0784314" Green="0.760784" Blue="0.627451" Alpha="1"><![CDATA[superiorfrontal_2]]></Label>
+      <Label Key="14" Red="0.0784314" Green="0.764706" Blue="0.627451" Alpha="1"><![CDATA[superiorfrontal_3]]></Label>
+      <Label Key="15" Red="0.0784314" Green="0.768627" Blue="0.627451" Alpha="1"><![CDATA[superiorfrontal_4]]></Label>
+      <Label Key="16" Red="0.392157" Green="0.0980392" Blue="0" Alpha="1"><![CDATA[caudalmiddlefrontal_1]]></Label>
+      <Label Key="17" Red="0.235294" Green="0.0784314" Blue="0.862745" Alpha="1"><![CDATA[precentral_1]]></Label>
+      <Label Key="18" Red="0.235294" Green="0.0784314" Blue="0.827451" Alpha="1"><![CDATA[precentral_2]]></Label>
+      <Label Key="19" Red="0.235294" Green="0.0784314" Blue="0.831373" Alpha="1"><![CDATA[precentral_3]]></Label>
+      <Label Key="20" Red="0.235294" Green="0.862745" Blue="0.235294" Alpha="1"><![CDATA[paracentral_1]]></Label>
+      <Label Key="21" Red="0.313726" Green="0.0784314" Blue="0.54902" Alpha="1"><![CDATA[rostralanteriorcingulate_1]]></Label>
+      <Label Key="22" Red="0.490196" Green="0.392157" Blue="0.627451" Alpha="1"><![CDATA[caudalanteriorcingulate_1]]></Label>
+      <Label Key="23" Red="0.862745" Green="0.705882" Blue="0.862745" Alpha="1"><![CDATA[posteriorcingulate_1]]></Label>
+      <Label Key="24" Red="0.54902" Green="0.0784314" Blue="0.54902" Alpha="1"><![CDATA[isthmuscingulate_1]]></Label>
+      <Label Key="25" Red="0.862745" Green="0.0784314" Blue="0.0784314" Alpha="1"><![CDATA[postcentral_1]]></Label>
+      <Label Key="26" Red="0.858824" Green="0.0784314" Blue="0.0784314" Alpha="1"><![CDATA[postcentral_2]]></Label>
+      <Label Key="27" Red="0.313726" Green="0.627451" Blue="0.0784314" Alpha="1"><![CDATA[supramarginal_1]]></Label>
+      <Label Key="28" Red="0.313726" Green="0.596078" Blue="0.0784314" Alpha="1"><![CDATA[supramarginal_2]]></Label>
+      <Label Key="29" Red="0.0784314" Green="0.705882" Blue="0.54902" Alpha="1"><![CDATA[superiorparietal_1]]></Label>
+      <Label Key="30" Red="0.0784314" Green="0.635294" Blue="0.54902" Alpha="1"><![CDATA[superiorparietal_2]]></Label>
+      <Label Key="31" Red="0.0784314" Green="0.639216" Blue="0.54902" Alpha="1"><![CDATA[superiorparietal_3]]></Label>
+      <Label Key="32" Red="0.862745" Green="0.235294" Blue="0.862745" Alpha="1"><![CDATA[inferiorparietal_1]]></Label>
+      <Label Key="33" Red="0.831373" Green="0.235294" Blue="0.862745" Alpha="1"><![CDATA[inferiorparietal_2]]></Label>
+      <Label Key="34" Red="0.835294" Green="0.235294" Blue="0.862745" Alpha="1"><![CDATA[inferiorparietal_3]]></Label>
+      <Label Key="35" Red="0.627451" Green="0.54902" Blue="0.705882" Alpha="1"><![CDATA[precuneus_1]]></Label>
+      <Label Key="36" Red="0.627451" Green="0.54902" Blue="0.635294" Alpha="1"><![CDATA[precuneus_2]]></Label>
+      <Label Key="37" Red="0.862745" Green="0.0784314" Blue="0.392157" Alpha="1"><![CDATA[cuneus_1]]></Label>
+      <Label Key="38" Red="0.470588" Green="0.392157" Blue="0.235294" Alpha="1"><![CDATA[pericalcarine_1]]></Label>
+      <Label Key="39" Red="0.0784314" Green="0.117647" Blue="0.54902" Alpha="1"><![CDATA[lateraloccipital_1]]></Label>
+      <Label Key="40" Red="0.0784314" Green="0.117647" Blue="0.498039" Alpha="1"><![CDATA[lateraloccipital_2]]></Label>
+      <Label Key="41" Red="0.0784314" Green="0.117647" Blue="0.501961" Alpha="1"><![CDATA[lateraloccipital_3]]></Label>
+      <Label Key="42" Red="0.882353" Green="0.54902" Blue="0.54902" Alpha="1"><![CDATA[lingual_1]]></Label>
+      <Label Key="43" Red="0.890196" Green="0.54902" Blue="0.54902" Alpha="1"><![CDATA[lingual_2]]></Label>
+      <Label Key="44" Red="0.705882" Green="0.862745" Blue="0.54902" Alpha="1"><![CDATA[fusiform_1]]></Label>
+      <Label Key="45" Red="0.705882" Green="0.760784" Blue="0.54902" Alpha="1"><![CDATA[fusiform_2]]></Label>
+      <Label Key="46" Red="0.0784314" Green="0.862745" Blue="0.235294" Alpha="1"><![CDATA[parahippocampal_1]]></Label>
+      <Label Key="47" Red="0.862745" Green="0.0784314" Blue="0.0392157" Alpha="1"><![CDATA[entorhinal_1]]></Label>
+      <Label Key="48" Red="0.27451" Green="0.27451" Blue="0.27451" Alpha="1"><![CDATA[temporalpole_1]]></Label>
+      <Label Key="49" Red="0.705882" Green="0.156863" Blue="0.470588" Alpha="1"><![CDATA[inferiortemporal_1]]></Label>
+      <Label Key="50" Red="0.635294" Green="0.156863" Blue="0.470588" Alpha="1"><![CDATA[inferiortemporal_2]]></Label>
+      <Label Key="51" Red="0.627451" Green="0.392157" Blue="0.196078" Alpha="1"><![CDATA[middletemporal_1]]></Label>
+      <Label Key="52" Red="0.596078" Green="0.392157" Blue="0.196078" Alpha="1"><![CDATA[middletemporal_2]]></Label>
+      <Label Key="53" Red="0.0980392" Green="0.392157" Blue="0.156863" Alpha="1"><![CDATA[bankssts_1]]></Label>
+      <Label Key="54" Red="0.54902" Green="0.862745" Blue="0.862745" Alpha="1"><![CDATA[superiortemporal_1]]></Label>
+      <Label Key="55" Red="0.54902" Green="0.862745" Blue="0.792157" Alpha="1"><![CDATA[superiortemporal_2]]></Label>
+      <Label Key="56" Red="0.588235" Green="0.588235" Blue="0.784314" Alpha="1"><![CDATA[transversetemporal_1]]></Label>
+      <Label Key="57" Red="1" Green="0.752941" Blue="0.12549" Alpha="1"><![CDATA[insula_1]]></Label>
+      <Label Key="58" Red="0.890196" Green="0.752941" Blue="0.12549" Alpha="1"><![CDATA[insula_2]]></Label>
+   </LabelTable>
+<DataArray Intent="NIFTI_INTENT_LABEL"
+           DataType="NIFTI_TYPE_INT32"
+           ArrayIndexingOrder="RowMajorOrder"
+           Dimensionality="1"
+           Dim0="32492"
+           Encoding="GZipBase64Binary"
+           Endian="LittleEndian"
+           ExternalFileName=""
+           ExternalFileOffset="0">
+   <MetaData>
+      <MD>
+         <Name><![CDATA[Name]]></Name>
+         <Value><![CDATA[node label]]></Value>
+      </MD>
+   </MetaData>
+   <Data>eJztnQtzFDcWhSeBhCQYbMwjBpLFWZMlrIH1xkAM//+HrV1rVSkqPe77XvVIVaeSzEj3fKe7PXRfEc/Jbrf79VrH13p4rTfXenmt+7v/j/NrXV7ry7UurnVC0M+F7gLkNSj5ks46as05N9Zs40NDrXzUc4e5Nr2uT0ouaB7PfBa5rIdmHo8ByZDG7FnysYUcs2bIR9QMkuwRPnfLMSP3YuaPmXglrmOLMQMn9/MsAl+LMQpbyefF1WKzGNGYMPeE3ixWPBE4vBkg/loMed/I0hvqK+ltnRXTL5rFC9oHk/Lo+USsD+0XStSt1fasCan3gVnrfPf3Hi21TtnrlajRqsNZj1n7gbhutKZ1vDDzoXMh8zjv9+pTVfv5LvejpPTkVg8D6AFDBx09K/QUIUwfLD0XWZ6/n43PkWW2lWtl2mqerXw+WGXQyvFg4gzpzz4rdin+/M9tK24ue3m/MQN3yWzF+2wS3vyeMDJref8K5a3dJ1syjlhb9/KWbJ58I64eX4ut9kyiwVTj6z2fUbkoPFCu0bOcNE9iovKUXFyWHg/mmVeCo2RJz+5eHHn/wIOB6i/F4O2dhpW3h2c5NP2svFpD0kfbQ7O+Vm1K3VFtqZqplypRb1RrVE+yDreGxHrKWuo67BrMfMl52Pdb79Ve771W+/ebUetbvg6qXxl6QdBjhJ503jtECvOsP9P5w57DWTJh882YK2Vr/azMmOf1IE96lvVm5Gap9Qq0WZ4Q1fs8hvRktPm4OTD9LmtmSAZsH9GaeXZ2LvdszFGuj8isJW9kzpx1MfL0OChbeq6JyraY8DyexycKy2Lw9/Y67kvzKfXALDy0vGo9Pchcam2IDhXq1vqcqR6259mqR+2hWtWKUIOznnocKOeWeu3uuzj7HVJ7IS0dO+pIUNj9HMzPovS5kzhvUucvYqYIuaTzSOSKmIeTad+zzJ5Dk5+TIwo7NUMUbgr/lrhnYvZgpfLOwurFiWFdjDzGo6Bs6bkmElf+vBWFy5up5IrCUz4fe7FE4PBm8PT38K71ZzT9Uu8G43mIrF0T1K+2FlK/54dlxarlI+lxWHhI1071NeouLVkLspfUmk/dg+LM5exDYeZQ3oO8NtrPiaqXTEn2q6j6pSFutpcBzo/mufPm18pVXh/5nuqsuSA/B1vLY5nVM4tURumfG+ssEp/Xmhl6mSTYrflz7TP7jNyzMc/EOwvrDJzRGSPzRWT7JSCXJ1PJlZ49I/BEYHkRiONGjwP4ezE8dvIv9wW26FnbY5ndq7VHZeEh5aNZX6t2qyanhypds1cLW29UC1pvVANS53iwflSH0wen9tEp67BrsH3+rWp0z35qpE8IXSIEeS5p7bdE1ZdMmGPR0mcDXQH0paLZrk3MNeqZjZIJmg3yMxcpDyQXpkcUJU8vE6WPiM0plcErizS/dQ4tfqsMHvxSf9/Cm53Kv7htmGe6rmdh3VfOdI8dibH3LFDjw7DltaTZcmHZajWkmRIX9Xhh2CIxYZ83W+eu9jqkngRL8m0912s/g2N6DN4MW/T38t4Hzy16bcFjxtoadaVrRqwlUYdbg3OcrdZdIdZcAedfDebW+u2QeZz3R6/nff7yv6Ppa0d/CejiVvcr+kFYPyL0qKPnFY2OYy1frjtC+oao3nkuVRsRr0/uteqdDZMvZYRkny0X5prcWibPPNKZtpJlZdhPfin25zvYPUMkZgtuSVZtZg3WnDfda0Zm7d0jU9ijc2rxSTF68f3owJU/u9R4epJmaj1TQXlySfj2hOWBMlGfO7EsIx4qB5Wl1Wuw5Oj1PLQZsD0YSX9qH4jrzelBYXyl+l5QTym/Xk9K2yv3tPC5M5GHV/2IdaVrStbTrmVdQ3q95TrsGsm5mHnU98t9ltE+BVSU3930DyW9EtKbTCcVnTno946wmVqSOn4a55ZynUnn0sgWIdfKJJ9J+rqTzITNIp1DKssWckTIwMkxM38EdovPVm/ufWD2Yn19q0isrxGy5MRwQbUvfFHZNLigz1RWPFQmLZYbnTn7lyw1Hiv/Foe1f85wtof+Xt61fs3WPC39rLwsfFoeUl7Q/mGk2hp1pWtK1qP0e6XqlLU811uso54/ybmQedDPIMza/PXavgVEvf2BfwL1m5BOBVT+//GjfQ+LbBK5INnK+2HNbFKZerlazxkz5CozjZ6doucpM3nkkcyS56FmiXZeKDlmzxCBPc8A6dNEOu6JG8oeiTuxa3Fr8Goyz8TrzYrhjcyZ9mC8GSF7VzWP2j5Qax6Fz2qfG7ufFZGLyiTBJckiycPlkGCSZOCwaHBgWfbZfwu+UT0t/ay8ZvHQrK9VW6OudE3JelK1tOtYrKesxeSGfkYu4QX5/yJG+gOgt0j9SVDt92NHy4XN1vvOkllzjb5fJlKmUS7odzBFypMyQdm183ByvGXmkMwyW46UJd8/8M4A3WPvqcfXm8tll+KnaJ/ZF7M+80y8s7B6cGJYPwVnjMx3w/YbsmZvX0uK7VOjLmavksrV4iuZuOKe20g8kVi2wuDpP6M3x/OU4HfK9IN6nmbS9uN4nRaS9inrY+RZn1O3VZtbM9WVqLO0tEWlv1/Zej1/v/bdgq3XITpmavT7i1vfmyKt1u8ghhyD0febRdI+ZNtSppRrX/J4s1G0lSwrg79m5p+R/fmE3DMxp/urGXhnYW1xenONGL2ZSrbE581T43oekMeDC/r8tkWevBbn2bbn8aIQNS+Wo/RtSfo5H+obwd/L28N3ds8teln4zFr/kULdRwp1ezWptWr1IOtbvV9MrV4PmVPjGFhj1MturYf0wsu10B56vg6zhtu7X6rrSFA/Germ+1e+dAT5XMB8n2Ip6HfmQFT7bhlMpl4ubDbJXLXzhskULVfrWvTII5FplAf75ywnCydP73OCcr8gkQWaB/p5FzmHZAYN/l4OzJ85HHYN/pnYc34pbsjfx5Dino3ZileCFcM7y3H15OQwQvisGDl8HEYKG4ZLky3i8bI8Tthzp318orBAOTTPjzeDpz/EG+sr4a3l2+sJUfxGnr1elLRfrwcm6aXhU3ppeoz6hZz6WrU96krXzOeUPX9qrd4+AqRWr0atTq3GqJc9qgHph3PWHlfWUvrw2DWY+ZLzoknqe91r+q6h7wm6V9HTQpKj9Io2Lm41Ogd3mPqGqa9A1YZmtm8FskHyYXNx8iRtIdO3O7tM2DyYTGUOzTytIZGllUMij1WOUQaLHJA/Nzn83Bxa/Bh2Kj/3+qmxY7kp7KOB5Z6F+T6RlXp9zMTLZY1wXCNxzsoYmU+LC8tmxaXFFOnceXxmRDkuyTfvVVhfK2WvxPpnSMp/Bm8P35pnr+/V8kp9KYwfp9cG8UtDwqcnSx/v+tTa9xzqRqqpVUsio2cNrv++aHf7z7S30JrztJhTjt7+RO916ih/V+zHoLog6ryiD0r6j4Io+W70zlh/Cqm8Hinn3Pta7Ymb7b8VeWcqs0lkoihCJqksWtmgebRyQHJC86bPjKhZkqCffVvP8H5i/vcVRWMv7xdqzJbsGO6kHrMFuxazFrsm70yskrxb4vRkjMw3M1v5jGjBhWXS5orEo8mC4Xlf8X6fvc7leJ/51NhGa98JMXDk6e/lXXp+MPTM+2PafmU/Tsur1vub1UfT451ifY3a7xTqStZ816nnVUuiTquGxfraWot10DWY+dC5kHn5HOz7+Xvnt6/lexKtPQuI3gjpXwP920C1fOX+B/RZNNdbpHrfHZ4kccy5ubDZILkkskXMxM1FzaKZh5PJIg82CzWPdhZKDkqWfc2gyY/NoMEflX1G7ijX+mzHGcqa7kk9jy+UMZfHccXwaXGOWLF8NU5LPujfr5Ji6/FRuJIsuCh/L02SK38+9GYqn1epLBI8JQuVg8sSgUOKgeqfegtW/q3ehqb3qK+i4Wvtaemn4eXhA+m5UetDe3rY+ph+oXdd6ZqS9aRqWdfxXC+1LvWuoWvOAWsw82vzanOpc/J5rX2J3nuSwlyfFI32RZKwfbKarLJBM93o90wSubzzlJmo+bQyYbP08mAySl97lBzYLK08klmsctzoVaZaDmoWrwyvhDLMyk/lprKX/FT22bg5vFLXCobZizdnht5TSbByjy/0XtDrmCZZcEZn3DKfJps21xaYIvFoskT4WTu7laZ/j+FsN2ageua1R94tf45ny7s2J/mnf+f41Xx78yRl7be0tLTkoRPiGsw6zHzo3BPA3JPBvN77rfdqr5evtdT7/Roav3+q9v/VSam8H2jl2k2UqZZtV8lTjuh5ylzUkXhHua3ypEweQyuP99hKjnxsIUMas/OXY2vss4wZmW/GbLxrrLHGGmusscYaa6yxxhprrPGw0AMl/cTU/WD6rqHvibpXCPJd8zPkylVmKnPdvdXsmVKuu7v5MrXy3N3Z55kxy4FCFuscB4VShoOJM5SS4i8zWLBjc1ixY7ghWXrcObs3d84+Yk7c3rxJEN6nk/FG4ISwbpFRmm/E6M3W44vKBXme0mJqcUGe9yLx7CNL77nc6nrp9QgsGDy8Dzre2r7PHHxLT+2MB8Z+yeeBsk/Zgytf0/CoSbs+1Yvay2zV4NZdWlrCqdy/GKl2X8ndmxjJKrt2DqtsW8y1pUy1n6sZ87Q+I2bK0cpwuDKYZWixz8AfgV2C+3AX/5jPzuzBS2E93MVmLfmicbb4LBiPMmHZNPmOBhpxabGNuCBsHkwjNi+eFpuHf4vHmyOxeDMcOXuP/DX8IN5Wvto+S0tLS0uyOgbOOa7MPe5o9H5EXdzqL0F9Lf77S6Fyfvm+lDSyYbXVXNLZLnZxcklki5YHmunqVtGzXBF0sYuVZeYMFHYv/s8C3JbsnyuS4l7MOswW17MU7w3nx1tZcVJ4Pxay5ISwfq4wSnKO+CCq8UkwarJx+bbI1WOicGkeIwpTFBZtDiiLN4O2/4hhJm+Mb8vb0lP72OaeVl5RfSgeGB/N+lq1NepSa14K1rts1OPUumTUuazU4ay/dFpLWac5X2Jeb06Lq3ZcaseZo/8BwhMwdg==</Data>
+</DataArray>
+</GIFTI>
