@@ -12,10 +12,10 @@ def get_fold_features(
     fold,
     ncpus=mp.cpu_count() - 1,
     batch_size=256,
-    encode_cols=("Gender", "Acquisition"),
+    encode_cols=["Gender"],
     area_cols=("Larea", "Rarea"),
     volume_cols=("FS_IntraCranial_Vol", "FS_BrainSeg_Vol"),
-    bin_encode={"Acquisition": 2},
+    bin_encode=False,
     passthrough_cols=None,
     gaussianize=False,
     add_squares=True,
@@ -40,10 +40,10 @@ def get_fold_features(
         add_squares=add_squares,
         zscore_cols=zscore_cols,
     )
-
+    print('using a threshold 0f 0.05 ')
     feats = get_CPM_features(
         cleaned,
-        pthresh=0.01,
+        pthresh=0.05,### lowered to 0.05 for aging... 0.01 too strict here
         ncpus=ncpus,
         batch_size=batch_size)
 
