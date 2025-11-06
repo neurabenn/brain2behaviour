@@ -3,12 +3,18 @@ import pandas as pd
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.preprocessing import LabelEncoder
 from sklearn.utils.validation import check_is_fitted
+from sklearn.preprocessing import StandardScaler
 from .utils import cube_root,zscore,normal_eqn_python,palm_inormal
 from .transformers import * 
 
-def clean_beh_data(dataset,fold,train_confounds,test_confounds,gaussianize=True):
-    Y_beh_train=dataset.behaviorData.loc[dataset.cv_folds[fold]['training']]
-    Y_beh_test=dataset.behaviorData.loc[dataset.cv_folds[fold]['testing']]
+### add option to select hyper parameter fold or main cv folds
+def clean_beh_data(dataset,fold,train_confounds,test_confounds,gaussianize=True,hyperparameter=False): ### change default to false
+    if hyperparameter==False:
+        Y_beh_train=dataset.behaviorData.loc[dataset.cv_folds[fold]['training']]
+        Y_beh_test=dataset.behaviorData.loc[dataset.cv_folds[fold]['testing']]
+    else:
+        Y_beh_train=dataset.behaviorData.loc[list(dataset.hyper_parameterSplits[fold]['training'])]
+        Y_beh_test=dataset.behaviorData.loc[list(dataset.hyper_parameterSplits[fold]['testing'])]
 
     ## get columns to output as df
     train_cols=Y_beh_train.columns
@@ -33,8 +39,12 @@ def clean_beh_data(dataset,fold,train_confounds,test_confounds,gaussianize=True)
     Y_train_resid=sclr.transform(Y_train_resid)
     Y_test_resid=sclr.transform(Y_test_resid)
 
-    Y_train_resid=pd.DataFrame(Y_train_resid,columns=train_cols,index=dataset.cv_folds[fold]['training'])
-    Y_test_resid=pd.DataFrame(Y_test_resid,columns=test_cols,index=dataset.cv_folds[fold]['testing'])
+    if hyperparameter==False:
+        Y_train_resid=pd.DataFrame(Y_train_resid,columns=train_cols,index=dataset.cv_folds[fold]['training'])
+        Y_test_resid=pd.DataFrame(Y_test_resid,columns=test_cols,index=dataset.cv_folds[fold]['testing'])
+    else:
+        Y_train_resid=pd.DataFrame(Y_train_resid,columns=train_cols,index=dataset.hyper_parameterSplits[fold]['training'])
+        Y_test_resid=pd.DataFrame(Y_test_resid,columns=test_cols,index=dataset.hyper_parameterSplits[fold]['testing'])
 
 
     return Y_train_resid,Y_test_resid
@@ -57,16 +67,22 @@ class GlobalStandardScaler(BaseEstimator, TransformerMixin):
         return centered / self.global_std_
 
 
-def clean_brain_data(dataset,fold,train_confounds,test_confounds):
-    Y_brain_train=dataset.brainData.loc[dataset.cv_folds[fold]['training']]
-    Y_brain_test=dataset.brainData.loc[dataset.cv_folds[fold]['testing']]
+def clean_brain_data(dataset,fold,train_confounds,test_confounds,hyperparameter=False):
+    if hyperparameter==False:
+        Y_brain_train=dataset.brainData.loc[dataset.cv_folds[fold]['training']]
+        Y_brain_test=dataset.brainData.loc[dataset.cv_folds[fold]['testing']]
+    else:
+        Y_brain_train=dataset.brainData.loc[list(dataset.hyper_parameterSplits[fold]['training'])]
+        Y_brain_test=dataset.brainData.loc[list(dataset.hyper_parameterSplits[fold]['testing'])]
     ### get columns so we can output dfs
     train_cols=Y_brain_train.columns
     test_cols=Y_brain_test.columns
 
     
     #1 we don't gaussianize the brain data but we do standard scale 
-    sclr=GlobalStandardScaler()
+    # sclr=GlobalStandardScaler() ### deprecated -- useful for FC wrong for distance? find out aug 29th
+    sclr=StandardScaler()
+    print('doing columns wise standard scaling')
     sclr.fit(Y_brain_train)
     Y_brain_train=sclr.transform(Y_brain_train)
     Y_brain_test=sclr.transform(Y_brain_test)
@@ -79,19 +95,26 @@ def clean_brain_data(dataset,fold,train_confounds,test_confounds):
     Y_train_resid=normal_eqn_resid(train_confounds,Y_brain_train,betas)
     Y_test_resid=normal_eqn_resid(test_confounds,Y_brain_test,betas)
 
-    Y_train_resid=pd.DataFrame(Y_train_resid,index=dataset.cv_folds[fold]['training'],columns=train_cols)
-    Y_test_resid=pd.DataFrame(Y_test_resid,index=dataset.cv_folds[fold]['testing'],columns=test_cols)
-
+    if hyperparameter==False:
+        Y_train_resid=pd.DataFrame(Y_train_resid,index=dataset.cv_folds[fold]['training'],columns=train_cols)
+        Y_test_resid=pd.DataFrame(Y_test_resid,index=dataset.cv_folds[fold]['testing'],columns=test_cols)
+    else:
+        Y_train_resid=pd.DataFrame(Y_train_resid,index=dataset.hyper_parameterSplits[fold]['training'],columns=train_cols)
+        Y_test_resid=pd.DataFrame(Y_test_resid,index=dataset.hyper_parameterSplits[fold]['testing'],columns=test_cols)
   
     return Y_train_resid,Y_test_resid
 
 
 def clean_fold(dataset,fold,encode_cols,area_cols,volume_cols,bin_encode=False,passthrough_cols=None,
-               gaussianize = True,add_squares = True,zscore_cols=True,drop_cols=None):
+               gaussianize = True,add_squares = True,zscore_cols=True,drop_cols=None,hyperparameter=False):
     """Clean a single fold of data. Uses SKlearn pipelines -- see transformers.py for more details"""
     print(f'Cleaning {fold}')
-    trainSubjs=dataset.cv_folds[fold]['training']
-    testSubjs=dataset.cv_folds[fold]['testing']
+    if hyperparameter==False:
+        trainSubjs=dataset.cv_folds[fold]['training']
+        testSubjs=dataset.cv_folds[fold]['testing']
+    else:
+        trainSubjs=list(dataset.hyper_parameterSplits[fold]['training'])
+        testSubjs=list(dataset.hyper_parameterSplits[fold]['testing'])
     if passthrough_cols==None:
         passthrough=[]
     else:
@@ -126,8 +149,8 @@ def clean_fold(dataset,fold,encode_cols,area_cols,volume_cols,bin_encode=False,p
     test_confs=ConfoundPipeline.transform(dataset.confounds.loc[testSubjs])
 
 
-    beh_cleanTrain,beh_cleanTest=clean_beh_data(dataset,fold,train_confs,test_confs)
-    brain_cleanTrain,brain_cleanTest=clean_brain_data(dataset,fold,train_confs,test_confs)
+    beh_cleanTrain,beh_cleanTest=clean_beh_data(dataset,fold,train_confs,test_confs,gaussianize=gaussianize,hyperparameter=hyperparameter)
+    brain_cleanTrain,brain_cleanTest=clean_brain_data(dataset,fold,train_confs,test_confs,hyperparameter=hyperparameter)
 
 
     return {'BrainTrainClean': brain_cleanTrain,
