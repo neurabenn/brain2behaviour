@@ -1,112 +1,77 @@
 import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.preprocessing import FunctionTransformer
+from numpy.polynomial.legendre import legval
 from sklearn.preprocessing import LabelEncoder
 from sklearn.utils.validation import check_is_fitted
 from sklearn.preprocessing import StandardScaler
-from .utils import cube_root,zscore,normal_eqn_python,palm_inormal
+from .utils import *
 from .transformers import * 
 
 ### add option to select hyper parameter fold or main cv folds
-def clean_beh_data(dataset,fold,train_confounds,test_confounds,gaussianize=True,hyperparameter=False): ### change default to false
-    if hyperparameter==False:
-        Y_beh_train=dataset.behaviorData.loc[dataset.cv_folds[fold]['training']]
-        Y_beh_test=dataset.behaviorData.loc[dataset.cv_folds[fold]['testing']]
-    else:
-        Y_beh_train=dataset.behaviorData.loc[list(dataset.hyper_parameterSplits[fold]['training'])]
-        Y_beh_test=dataset.behaviorData.loc[list(dataset.hyper_parameterSplits[fold]['testing'])]
+class BehPipeline:
+    """Simple orchestrator: (y, conf) -> y_clean with steps: gauss -> resid -> z."""
+    def __init__(self, gaussianize=True):
+        self.gauss = GaussianizeY(enabled=gaussianize)
+        self.resid = ResidualizeY()
+        self.std   = StandardizeY()
+        self.columns_ = None
 
-    ## get columns to output as df
-    train_cols=Y_beh_train.columns
-    test_cols=Y_beh_test.columns
-
-    #### clean behavioral data
-    if gaussianize==True:
-        #1. gaussianize it 
-        rint=PalmInormalTransformer(method='blom',overwrite=True)#fit it
-        ## transform it to a gaussian
-        Y_beh_train=rint.fit_transform(Y_beh_train)
-        Y_beh_test=rint.transform(Y_beh_test)
-        
-    #2 fit linear model -- pas cleaned confound matrices
-    betas=normal_eqn_fit(train_confounds,Y_beh_train)## fit it -- get betas
-    
-    Y_train_resid=normal_eqn_resid(train_confounds,Y_beh_train,betas)
-    Y_test_resid=normal_eqn_resid(test_confounds,Y_beh_test,betas)
-
-    sclr=StandardScaler()
-    sclr.fit(Y_train_resid)
-    Y_train_resid=sclr.transform(Y_train_resid)
-    Y_test_resid=sclr.transform(Y_test_resid)
-
-    if hyperparameter==False:
-        Y_train_resid=pd.DataFrame(Y_train_resid,columns=train_cols,index=dataset.cv_folds[fold]['training'])
-        Y_test_resid=pd.DataFrame(Y_test_resid,columns=test_cols,index=dataset.cv_folds[fold]['testing'])
-    else:
-        Y_train_resid=pd.DataFrame(Y_train_resid,columns=train_cols,index=dataset.hyper_parameterSplits[fold]['training'])
-        Y_test_resid=pd.DataFrame(Y_test_resid,columns=test_cols,index=dataset.hyper_parameterSplits[fold]['testing'])
-
-
-    return Y_train_resid,Y_test_resid
-
-class GlobalStandardScaler(BaseEstimator, TransformerMixin):
-    """
-    Subtracts per-column mean, then divides by *global std of centered data*.
-    used to normalize brain data .
-    """
-    def fit(self, X, y=None):
-        X = np.asarray(X, dtype=np.float64)
-        self.means_ = np.nanmean(X, axis=0)
-        centered = X - self.means_
-        self.global_std_ = np.nanstd(centered.flatten())
+    def fit(self, y_train, conf_train):
+        if isinstance(y_train, pd.Series): y_train = y_train.to_frame()
+        self.columns_ = list(y_train.columns)
+        Yg   = self.gauss.fit(y_train).transform(y_train)
+        Yres = self.resid.fit(conf_train, Yg).transform(conf_train, Yg)
+        self.std.fit(Yres)
         return self
 
-    def transform(self, X, y=None):
-        X = np.asarray(X, dtype=np.float64)
-        centered = X - self.means_
-        return centered / self.global_std_
+    def transform(self, y, conf):
+        if isinstance(y, pd.Series): y = y.to_frame()
+        Yg   = self.gauss.transform(y)
+        Yres = self.resid.transform(conf, Yg)
+        Yz   = self.std.transform(Yres)
+        return Yz[self.columns_]  # preserve order
 
+    def fit_transform(self, y_train, conf_train):
+        self.fit(y_train, conf_train)
+        return self.transform(y_train, conf_train)
 
-def clean_brain_data(dataset,fold,train_confounds,test_confounds,hyperparameter=False):
-    if hyperparameter==False:
-        Y_brain_train=dataset.brainData.loc[dataset.cv_folds[fold]['training']]
-        Y_brain_test=dataset.brainData.loc[dataset.cv_folds[fold]['testing']]
-    else:
-        Y_brain_train=dataset.brainData.loc[list(dataset.hyper_parameterSplits[fold]['training'])]
-        Y_brain_test=dataset.brainData.loc[list(dataset.hyper_parameterSplits[fold]['testing'])]
-    ### get columns so we can output dfs
-    train_cols=Y_brain_train.columns
-    test_cols=Y_brain_test.columns
+class BrainPipeline:
+    """Order: standardize (fit on train) -> residualize (fit on train)."""
+    def __init__(self):
+        self.std = StandardizeY()
+        self.res = ResidualizeY()
+        self.columns_ = None
 
-    
-    #1 we don't gaussianize the brain data but we do standard scale 
-    # sclr=GlobalStandardScaler() ### deprecated -- useful for FC wrong for distance? find out aug 29th
-    sclr=StandardScaler()
-    print('doing columns wise standard scaling')
-    sclr.fit(Y_brain_train)
-    Y_brain_train=sclr.transform(Y_brain_train)
-    Y_brain_test=sclr.transform(Y_brain_test)
+    def fit(self, brain_train, conf_train):
+        if isinstance(brain_train, pd.Series): brain_train = brain_train.to_frame()
+        self.columns_ = list(brain_train.columns)
+        Bz_train = self.std.fit(brain_train).transform(brain_train)
+        self.res.fit(conf_train, Bz_train)
+        return self
 
+    def transform(self, brain, conf):
+        if isinstance(brain, pd.Series): brain = brain.to_frame()
+        Bz = self.std.transform(brain)
+        Bres = self.res.transform(conf, Bz)
+        return Bres[self.columns_]
 
-
-    # #2 fit linear model -- pas cleaned confound matrices
-    betas=normal_eqn_fit(train_confounds,Y_brain_train)## fit it -- get betas
-    
-    Y_train_resid=normal_eqn_resid(train_confounds,Y_brain_train,betas)
-    Y_test_resid=normal_eqn_resid(test_confounds,Y_brain_test,betas)
-
-    if hyperparameter==False:
-        Y_train_resid=pd.DataFrame(Y_train_resid,index=dataset.cv_folds[fold]['training'],columns=train_cols)
-        Y_test_resid=pd.DataFrame(Y_test_resid,index=dataset.cv_folds[fold]['testing'],columns=test_cols)
-    else:
-        Y_train_resid=pd.DataFrame(Y_train_resid,index=dataset.hyper_parameterSplits[fold]['training'],columns=train_cols)
-        Y_test_resid=pd.DataFrame(Y_test_resid,index=dataset.hyper_parameterSplits[fold]['testing'],columns=test_cols)
-  
-    return Y_train_resid,Y_test_resid
-
+    def fit_transform(self, brain_train, conf_train):
+        self.fit(brain_train, conf_train)
+        return self.transform(brain_train, conf_train)
+### go back and make into proper transformer at somepoint
+### legendre polynomials for age confounds
+### enables us to scale age in a manner which maintains its properties but allows us to compare  to older datasets
+### generous range of 18-100 covers everything
+def add_age_legendre(df, low=18, high=100):
+    t = 2*(df["Age_in_Yrs"] - low)/(high - low) - 1
+    L1 = legval(t, [0, 1])      # P1(t) = t
+    L2 = legval(t, [0, 0, 1])   # P2(t) = (3t^2 - 1)/2
+    return df.assign(Age_L1=L1, Age_L2=L2)
 
 def clean_fold(dataset,fold,encode_cols,area_cols,volume_cols,bin_encode=False,passthrough_cols=None,
-               gaussianize = True,add_squares = True,zscore_cols=True,drop_cols=None,hyperparameter=False):
+               gaussianize = True,add_squares = True,zscore_cols=True,drop_cols=None,pca_head_size=True,hyperparameter=False):
     """Clean a single fold of data. Uses SKlearn pipelines -- see transformers.py for more details"""
     print(f'Cleaning {fold}')
     if hyperparameter==False:
@@ -123,7 +88,11 @@ def clean_fold(dataset,fold,encode_cols,area_cols,volume_cols,bin_encode=False,p
     
     num_cols = [c for c in dataset.confounds.columns if c not in encode_cols]
 
-    
+    exclusion_cols=['Age_in_Yrs']+list(encode_cols)+list(passthrough)
+    size_cols = ["FS_IntraCranial_Vol","FS_BrainSeg_Vol","Larea","Rarea"]
+
+    no_gauss=exclusion_cols+size_cols
+    print(no_gauss)
     #### confound prep logic
     steps = [
         ("label_enc", MultiColumnLabelEncoder(columns=encode_cols)),
@@ -133,27 +102,48 @@ def clean_fold(dataset,fold,encode_cols,area_cols,volume_cols,bin_encode=False,p
         for key in bin_encode.keys():
             steps.append((f"binarize_{key}", BinarizeColumnTransformer(column=[key], threshold=bin_encode[key])))
         encode_cols=list(set(list(bin_encode.keys())+list(encode_cols))) ### ensures that binary encoded variables are not further transformed
-    if add_squares:
-        steps.append(("square", SquareTransformer(exclude_cols=encode_cols+passthrough)))
     if gaussianize:
         steps.append(("inormal", PalmInormalTransformer(
-        exclude_cols=encode_cols+passthrough,
+        exclude_cols=no_gauss,
         method="Blom",overwrite=True)))
     if zscore_cols:
-        steps.append(("zscore", StandardScalerDF(columns=None, exclude_cols=encode_cols+passthrough, overwrite=True)))
+        steps.append(("zscore", StandardScalerDF(exclude_cols=encode_cols+passthrough+['Age_in_Yrs'], overwrite=True)))
+    if pca_head_size:
+        steps.append(("size_pca", PCASizeDF(cols=size_cols, n_components=2,
+                                        prefix="SizePC", drop_original=True)))
+    if add_squares:
+        steps.append(("age_legendre", FunctionTransformer(add_age_legendre, validate=False)))
+        steps.append(("drop_age_raw", FunctionTransformer(lambda df: df.drop(columns=["Age_in_Yrs"]), validate=False)))
+        # steps.append(("age_decades", FunctionTransformer(lambda df: df.assign(Age_in_Yrs=(df["Age_in_Yrs"] - 50)/10), validate=False)))
+        # steps.append(("square_age", SquareTransformer(columns=["Age_in_Yrs"], overwrite=False)))
+        # steps.append(("zscore_age_sq", StandardScalerDF(columns=["Age_in_Yrs_sq"], overwrite=True)))
     
     ConfoundPipeline = Pipeline(steps)
 
     ConfoundPipeline.fit(dataset.confounds.loc[trainSubjs])
-    train_confs=ConfoundPipeline.transform(dataset.confounds.loc[trainSubjs])
-    test_confs=ConfoundPipeline.transform(dataset.confounds.loc[testSubjs])
 
+    #### the confound pipeline is set so now let's clean the fold
+    ### we already have our subjects set up from cv vs hyperparameter selection
+    #### transform the confounds from train and test
+    conf_train = ConfoundPipeline.transform(dataset.confounds.loc[trainSubjs])
+    conf_test  = ConfoundPipeline.transform(dataset.confounds.loc[testSubjs])
 
-    beh_cleanTrain,beh_cleanTest=clean_beh_data(dataset,fold,train_confs,test_confs,gaussianize=gaussianize,hyperparameter=hyperparameter)
-    brain_cleanTrain,brain_cleanTest=clean_brain_data(dataset,fold,train_confs,test_confs,hyperparameter=hyperparameter)
+    ### pipe the confounds into the residualization transformers
+    brain_pipe = BrainPipeline()
+    beh_pipe = BehPipeline(gaussianize=True)
+    ### fit and residualize training
+    brain_train_clean = brain_pipe.fit_transform(dataset.brainData.loc[trainSubjs], conf_train)
+    beh_train_clean = beh_pipe.fit_transform(dataset.behaviorData.loc[trainSubjs], conf_train)
 
-
-    return {'BrainTrainClean': brain_cleanTrain,
-            'BrainTestClean':   brain_cleanTest,
-            'BehTrainClean': beh_cleanTrain,
-            'BehTestClean':   beh_cleanTest}
+    ### apply transformation / residualize test data
+    brain_test_clean  = brain_pipe.transform(dataset.brainData.loc[testSubjs],  conf_test)
+    beh_test_clean  = beh_pipe.transform(dataset.behaviorData.loc[testSubjs],  conf_test)
+    return {'BrainTrainClean': brain_train_clean,
+            'BrainTestClean':   brain_test_clean,
+            'BehTrainClean': beh_train_clean,
+            'BehTestClean':   beh_test_clean,
+            'train_confounds':conf_train,
+            'test_confounds':conf_test,
+            'conf_pipeline':ConfoundPipeline,
+            'BrainPipeline':brain_pipe,
+            'BehaviorPipe':beh_pipe}

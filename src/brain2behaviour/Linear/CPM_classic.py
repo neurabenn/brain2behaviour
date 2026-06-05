@@ -34,6 +34,7 @@ def prep_ds_CPM_classic(
     area_cols,
     volume_cols,
     bin_encode,
+    passthrough_cols=None,
     gaussianize=True,
     add_squares=True,
     zscore_cols=True
@@ -113,6 +114,7 @@ def prep_ds_CPM_classic(
             area_cols=area_cols,
             volume_cols=volume_cols,
             bin_encode=bin_encode,
+            passthrough_cols=passthrough_cols,
             gaussianize=gaussianize,
             add_squares=add_squares,
             zscore_cols=zscore_cols,
@@ -240,12 +242,15 @@ def evaluate_fold_cpm(clean_data_dict,outpath,fold,sign,perm_set):
             r,pred_dic = train_predict_test(permed_dict,save_model=False)
             r_perm.append(r)
     elif type(perm_set)==str:
-        perm_set=pd.read_csv(perm_set,header=None)
+        perm_set_train=pd.read_csv(f'{perm_set}/training/{fold}.csv',header=None)
+        perm_set_test=pd.read_csv(f'{perm_set}/validation/{fold}.csv',header=None)
+        # perm_set=pd.read_csv(perm_set,header=None)
         rvals=[]
-        for i,perm in enumerate(perm_set):
+        for perm in perm_set_train:### same indices on train and test
             ### if using csv then first set should be original order
             permed_dict=clean_data_dict.copy()
-            permed_dict['BehTrainClean']=permed_dict['BehTrainClean'].iloc[perm_set[perm]]
+            permed_dict['BehTrainClean']=permed_dict['BehTrainClean'].iloc[perm_set_train[perm]]
+            permed_dict['BehTestClean']=permed_dict['BehTestClean'].iloc[perm_set_test[perm]]
             r,pred_dict = train_predict_test(permed_dict,save_model=False)
             rvals.append(r)                
     out_array=np.asarray(rvals)

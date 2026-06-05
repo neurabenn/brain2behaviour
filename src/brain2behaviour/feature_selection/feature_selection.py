@@ -4,7 +4,7 @@ from scipy.stats import spearmanr,pearsonr
 import multiprocessing
 from multiprocessing import Pool, cpu_count
 
-def calc_corr_by_col(brain, beh, method='spearman'):
+def calc_corr_by_col(brain, beh, method='pearson'):
     r_vals = {}
     p_vals = {}
     for measure in beh:
@@ -67,7 +67,7 @@ def filter_r_by_p(df, p_thresh=0.01):
 # Helper to make each batch a tuple for pool.starmap
 def batch_spearman(args):
     batch_df, beh = args
-    return calc_corr_by_col(batch_df, beh,)
+    return calc_corr_by_col(batch_df, beh)
 
 
 # Helper to make each batch a tuple for pool.starmap
@@ -75,7 +75,7 @@ def batch_pearson(args):
     batch_df, beh = args
     return calc_corr_by_col(batch_df, beh,method='pearson')
 
-def get_CPM_features(CleanedData, pthresh=0.01, batch_size=1, ncpus=1,method='spearman'):
+def get_CPM_features(CleanedData, pthresh=0.01, batch_size=1, ncpus=1,method='pearson'):
     print(f'using {method}')
     brain = CleanedData['BrainTrainClean']
     beh = CleanedData['BehTrainClean']

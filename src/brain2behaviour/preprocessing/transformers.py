@@ -5,6 +5,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.utils.validation import check_is_fitted
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
+from sklearn.decomposition import PCA
 from scipy.special import erfinv
 from brain2behaviour.preprocessing.utils import cube_root,zscore,normal_eqn_python,palm_inormal
 
@@ -132,6 +133,7 @@ class SquareTransformer(BaseEstimator, TransformerMixin):
             Columns to exclude from squaring (only used if columns is None).
         overwrite : bool, default=False
             If True, overwrite original column. If False, add new column with suffix '_sq'.
+   
         """
         self.columns = columns
         self.exclude_cols = exclude_cols or []
@@ -352,3 +354,96 @@ def normal_eqn_resid(X, Y, beta):
     return resid
 
 
+##### new transformers built for streamlining pipeline
+######################################################
+
+class PCASizeDF(BaseEstimator, TransformerMixin):
+    def __init__(self, cols, n_components=2, prefix="SizePC", drop_original=True, random_state=0):
+        self.cols = list(cols)
+        self.n_components = n_components
+        self.prefix = prefix
+        self.drop_original = drop_original
+        self.random_state=random_state
+        self.pca_ = PCA(n_components=n_components, random_state=random_state)
+
+    def fit(self, X, y=None):
+        self.pca_.fit(X[self.cols])
+        print('explained variance in head size by PCA')
+        print(self.pca_.explained_variance_ratio_)
+        return self
+
+    def transform(self, X, y=None):
+        Xo = X.copy()
+        scores = self.pca_.transform(Xo[self.cols])
+        for i in range(self.n_components):
+            Xo[f"{self.prefix}{i+1}"] = scores[:, i]
+        if self.drop_original:
+            Xo = Xo.drop(columns=self.cols)
+        return Xo
+
+
+class GaussianizeY(BaseEstimator):
+    def __init__(self, enabled=True):
+        self.enabled = enabled
+        self.rint_ = None
+
+    def fit(self, y):
+        if isinstance(y, pd.Series): y = y.to_frame()
+        if self.enabled:
+            self.rint_ = PalmInormalTransformer(method='blom', overwrite=True)
+            self.rint_.fit(y)
+        return self
+
+    def transform(self, y):
+        if isinstance(y, pd.Series): y = y.to_frame()
+        return self.rint_.transform(y) if self.enabled and self.rint_ is not None else y.copy()
+
+class ResidualizeY(BaseEstimator):
+    def __init__(self):
+        self.betas_ = None
+
+    def fit(self, conf, y):
+        # y must be a DataFrame to grab index/columns later
+        if isinstance(y, pd.Series):
+            y = y.to_frame()
+        self._train_index = y.index
+        self._train_cols  = y.columns
+        self.betas_ = normal_eqn_fit(conf, y)
+        return self
+
+    def transform(self, conf, y):
+        if isinstance(y, pd.Series):
+            y = y.to_frame()
+        res = normal_eqn_resid(conf, y, self.betas_)  # <- likely ndarray
+        # wrap back to DataFrame with y's labels
+        return pd.DataFrame(res, index=y.index, columns=y.columns)
+
+class StandardizeY(BaseEstimator):
+    def __init__(self):
+        self.scaler_ = StandardScaler()
+
+    def fit(self, y):
+        self.scaler_.fit(y)
+        return self
+
+    def transform(self, y):
+        return pd.DataFrame(self.scaler_.transform(y), index=y.index, columns=y.columns)
+
+
+#### deprecated functoin -- useful at somempoint posisbly?
+class GlobalStandardScaler(BaseEstimator, TransformerMixin):
+    """
+    Subtracts per-column mean, then divides by *global std of centered data*.
+    used to normalize brain data .
+    """
+    def fit(self, X, y=None):
+        X = np.asarray(X, dtype=np.float64)
+        self.means_ = np.nanmean(X, axis=0)
+        centered = X - self.means_
+        self.global_std_ = np.nanstd(centered.flatten())
+        return self
+
+    def transform(self, X, y=None):
+        X = np.asarray(X, dtype=np.float64)
+        centered = X - self.means_
+        return centered / self.global_std_
